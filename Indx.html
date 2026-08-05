@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BS Oil — BSstore.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,900;1,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --cream:#FFFBF2;
+  --cream-2:#FFF3DC;
+  --paper:#FFFFFF;
+  --ink:#231407;
+  --ink-soft:#6b5842;
+  --red:#D42328;
+  --red-dark:#A5181D;
+  --red-soft:#FBE1DF;
+  --gold:#F2A900;
+  --gold-light:#FFD666;
+  --gold-deep:#B8790A;
+  --line:rgba(35,20,7,.12);
+  --shadow:0 24px 48px -24px rgba(35,20,7,.35);
+  --shadow-sm:0 10px 24px -14px rgba(35,20,7,.3);
+  --radius:24px;
+  --radius-sm:14px;
+  --ff-display:'Fraunces',Georgia,serif;
+  --ff-body:'Manrope',-apple-system,Segoe UI,sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--ff-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+:focus-visible{outline:3px solid var(--gold-deep);outline-offset:3px;}
+.hidden{display:none !important;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+.eyebrow{
+  font-family:var(--ff-body);font-weight:800;font-size:12.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:"";width:16px;height:2px;background:var(--gold-deep);display:inline-block;border-radius:2px;}
+h1,h2,h3{font-family:var(--ff-display);font-weight:900;line-height:1.05;margin:0;color:var(--ink);}
+p{line-height:1.6;color:var(--ink-soft);margin:0;}
+
+/* ============ HEAVY JUICY LOGIN SCREEN ============ */
+#login-overlay{
+  position:fixed;inset:0;z-index:99999;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  transition:opacity .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1);
+}
+#login-overlay.unlocked{
+  opacity:0;pointer-events:none;transform:scale(1.05);
+}
+.login-card{
+  background:var(--cream);border:3px solid var(--ink);border-radius:32px;
+  max-width:480px;width:100%;padding:36px 28px;text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  animation:popIn .6s cubic-bezier(.18,.89,.32,1.28) forwards;
+  position:relative;overflow:hidden;
+}
+.login-img-box{
+  width:160px;height:160px;margin:0 auto 20px;border-radius:24px;
+  background:radial-gradient(circle at 50% 30%, #FFD666 0%, #F2A900 60%, #B8790A 100%);
+  border:4px solid var(--ink);box-shadow:0 12px 24px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  padding:10px;
+}
+.login-img-box svg{
+  width:100%;height:100%;
+}
+.login-dialogue{
+  font-family:var(--ff-display);font-weight:900;font-size:24px;
+  line-height:1.2;color:var(--ink);margin-bottom:24px;
+}
+.login-dialogue em{
+  font-style:italic;color:var(--red);display:block;margin-top:4px;
+}
+.login-form{display:flex;flex-direction:column;gap:14px;}
+.login-input{
+  width:100%;padding:16px 20px;border:3px solid var(--ink);border-radius:100px;
+  font-family:var(--ff-body);font-size:16px;font-weight:800;text-align:center;
+  background:var(--paper);color:var(--ink);transition:border-color .2s, box-shadow .2s;
+}
+.login-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft);}
+.login-input.error{border-color:var(--red);animation:shake .35s;}
+.login-btn{
+  background:var(--red);color:#fff;font-family:var(--ff-display);font-size:18px;font-weight:900;
+  padding:16px 28px;border-radius:100px;border:3px solid var(--ink);
+  box-shadow:0 6px 0 var(--ink);cursor:pointer;transition:transform .15s, box-shadow .15s;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--ink);}
+.login-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink);}
+.login-error-msg{
+  color:var(--red-dark);font-size:13px;font-weight:800;margin-top:4px;
+  min-height:18px;opacity:0;transition:opacity .2s;
+}
+.login-error-msg.show{opacity:1;}
+
+/* ============ MOTION ============ */
+@keyframes floatDrop{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-22px) rotate(6deg);}}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes revealUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes bounceCart{0%,100%{transform:scale(1);}35%{transform:scale(1.35) rotate(-6deg);}65%{transform:scale(.92);}}
+@keyframes pulseSoft{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes drip{0%{opacity:0;transform:translateY(-4px) scale(.6);}25%{opacity:1;transform:scale(1);}100%{opacity:0;transform:translateY(30px) scale(.7);}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
+@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1;}100%{transform:translateY(340px) rotate(500deg);opacity:0;}}
+@keyframes drawCheck{to{stroke-dashoffset:0;}}
+@keyframes slideToast{0%{opacity:0;transform:translateY(16px);}10%,85%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-10px);}}
+@keyframes waveShift{0%{transform:translateX(0);}100%{transform:translateX(-50px);}}
+
+.reveal{opacity:0;}
+.reveal.in-view{animation:revealUp .8s cubic-bezier(.2,.7,.2,1) forwards;}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;}
+  html{scroll-behavior:auto;}
+}
+
+/* ============ TOP MARQUEE ============ */
+.topbar{background:var(--ink);color:var(--cream-2);overflow:hidden;white-space:nowrap;position:relative;z-index:60;}
+.topbar-track{display:inline-flex;animation:marquee 22s linear infinite;padding:9px 0;}
+.topbar-track span{padding:0 28px;font-size:12.5px;font-weight:700;letter-spacing:.05em;display:inline-flex;align-items:center;gap:8px;}
+.topbar-track span b{color:var(--gold-light);}
+
+/* ============ HEADER ============ */
+header.site{
+  position:sticky;top:0;z-index:50;background:rgba(255,251,242,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+.brand{display:flex;align-items:center;gap:11px;}
+.logo-badge{
+  width:46px;height:46px;border-radius:50%;background:var(--red);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:0 6px 0 var(--red-dark);flex-shrink:0;
+}
+.logo-badge span{font-family:var(--ff-display);font-weight:900;font-size:19px;color:var(--cream);}
+.logo-badge .drop{
+  position:absolute;top:-6px;right:-4px;width:14px;height:16px;background:var(--gold);
+  clip-path:path('M7 0C7 0 0 9 0 12.5A7 7 0 0 0 14 12.5C14 9 7 0 7 0Z');
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.1;}
+.brand-text b{font-family:var(--ff-display);font-weight:900;font-size:19px;}
+.brand-text small{font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase;font-weight:700;}
+.nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0;}
+.nav-links a{font-weight:700;font-size:14.5px;text-decoration:none;position:relative;}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-4px;width:0;height:2px;background:var(--red);transition:width .25s;}
+.nav-links a:hover::after{width:100%;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.cart-btn{position:relative;width:44px;height:44px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;transition:transform .2s;}
+.cart-btn:hover{transform:translateY(-2px);}
+.cart-count{
+  position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:11px;font-weight:800;
+  width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+.cart-count.bump{animation:bounceCart .4s ease;}
+@media(max-width:840px){.nav-links{display:none;}}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 26px;border-radius:100px;font-weight:800;font-size:15px;
+  transition:transform .18s, box-shadow .18s, background .18s; white-space:nowrap;
+}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 8px 0 var(--red-dark);}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:active{box-shadow:0 4px 0 var(--red-dark);transform:translateY(2px) scale(.98);}
+.btn-gold{background:var(--gold);color:var(--ink);box-shadow:0 8px 0 var(--gold-deep);}
+.btn-gold:hover{transform:translateY(-2px);}
+.btn-gold:active{box-shadow:0 4px 0 var(--gold-deep);transform:translateY(2px) scale(.98);}
+.btn-outline{background:transparent;color:var(--ink);border:2px solid var(--ink);padding:13px 24px;}
+.btn-outline:hover{background:var(--ink);color:var(--cream);}
+.btn-block{width:100%;}
+.btn[disabled]{opacity:.5;pointer-events:none;}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:70px 0 40px;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:50px;align-items:center;}
+.hero-copy h1{font-size:clamp(34px,5vw,58px);margin:16px 0 18px;}
+.hero-copy h1 em{font-style:italic;color:var(--red);}
+.hero-copy p.lead{font-size:17.5px;max-width:460px;margin-bottom:26px;}
+.stars{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.stars .row{display:flex;gap:2px;}
+.stars small{font-weight:700;color:var(--ink-soft);}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;}
+.hero-trust{display:flex;gap:18px;flex-wrap:wrap;}
+.hero-trust span{font-size:13px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+
+.hero-art{position:relative;display:flex;align-items:center;justify-content:center;min-height:420px;}
+.blob{
+  position:absolute;width:410px;height:410px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, var(--gold-deep) 100%);
+  opacity:.9;filter:blur(0px);
+}
+.drop-float{position:absolute;animation:floatDrop 5s ease-in-out infinite;opacity:.85;}
+.bottle-stage{position:relative;z-index:2;perspective:1400px;animation:revealUp 1s ease .1s both;}
+.bottle-3d{position:relative;width:230px;height:360px;transform-style:preserve-3d;cursor:grab;touch-action:pan-y;will-change:transform;}
+.bottle-3d:active{cursor:grabbing;}
+.bottle-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;filter:drop-shadow(0 22px 26px rgba(35,20,7,.22));}
+.bottle-face.front{transform:translateZ(1px);}
+.bottle-face.back{transform:rotateY(180deg) translateZ(1px);}
+.bottle-shade{
+  display:none !important;opacity:0 !important;pointer-events:none;
+}
+.drag-hint{
+  position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);background:var(--ink);color:var(--cream);
+  font-size:11.5px;font-weight:700;padding:7px 14px;border-radius:100px;white-space:nowrap;opacity:.9;
+  animation:hintSway 1.8s ease-in-out infinite;pointer-events:none;transition:opacity .5s;z-index:5;
+}
+.drag-hint.faded{opacity:0;}
+@keyframes hintSway{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(4px);}}
+.badge-discount{
+  position:absolute;top:14px;right:-6px;background:var(--red);color:#fff;font-family:var(--ff-display);
+  font-weight:900;width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;transform:rotate(8deg);box-shadow:0 8px 0 var(--red-dark);z-index:3;
+  animation:pulseSoft 2.6s ease-in-out infinite;
+}
+.badge-discount b{font-size:22px;line-height:1;}
+.badge-discount small{font-size:9px;font-weight:800;letter-spacing:.05em;}
+
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-art{order:-1;min-height:320px;}
+  .blob{width:300px;height:300px;}
+}
+
+/* ============ TRUST STRIP ============ */
+.trust-strip{background:var(--ink);padding:20px 0;}
+.trust-strip .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.trust-item{display:flex;align-items:center;gap:10px;color:var(--cream);font-weight:700;font-size:13.5px;flex:1;min-width:180px;}
+.trust-item .ic{width:34px;height:34px;border-radius:50%;background:rgba(242,169,0,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* ============ SECTION HEAD ============ */
+.section{padding:80px 0;}
+.section-head{max-width:600px;margin:0 auto 46px;text-align:center;}
+.section-head h2{font-size:clamp(26px,4vw,38px);margin:14px 0 10px;}
+.section-head p{font-size:15.5px;}
+.section-head.left{margin:0 0 46px;text-align:left;}
+
+/* ============ BENEFITS ============ */
+.benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.benefit-card{
+  background:var(--paper);border-radius:var(--radius-sm);padding:28px 24px;border:1px solid var(--line);
+  transition:transform .25s, box-shadow .25s; position:relative; overflow:hidden;
+}
+.benefit-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-sm);}
+.benefit-card .ic{
+  width:52px;height:52px;border-radius:16px;background:var(--cream-2);display:flex;align-items:center;
+  justify-content:center;margin-bottom:16px;
+}
+.benefit-card h3{font-size:18px;margin-bottom:8px;}
+.benefit-card p{font-size:14px;}
+@media(max-width:840px){.benefits-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.benefits-grid{grid-template-columns:1fr;}}
+
+/* ============ INGREDIENTS MARQUEE ============ */
+.ingredients{background:var(--cream-2);padding:60px 0;overflow:hidden;}
+.ing-track{display:flex;gap:20px;animation:marquee 26s linear infinite;width:max-content;}
+.ing-chip{
+  display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);
+  padding:14px 22px;border-radius:100px;box-shadow:var(--shadow-sm);white-space:nowrap;
+}
+.ing-chip .dot{width:34px;height:34px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.ing-chip b{font-size:14.5px;}
+
+/* ============ STEPS ============ */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;counter-reset:step;}
+.step-card{text-align:center;padding:10px;}
+.step-num{
+  width:56px;height:56px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--ff-display);
+  font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+  box-shadow:0 6px 0 var(--red-dark);
+}
+.step-card h3{font-size:17px;margin-bottom:8px;}
+.step-card p{font-size:14px;}
+@media(max-width:760px){.steps{grid-template-columns:1fr;gap:36px;}}
+
+/* ============ PRODUCT / BUY BLOCK ============ */
+.buy-section{background:var(--paper);}
+.buy-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:flex-start;}
+.buy-art{position:relative;display:flex;justify-content:center;}
+.buy-panel h2{font-size:clamp(26px,4vw,34px);margin-bottom:6px;}
+.price-row{display:flex;align-items:baseline;gap:12px;margin:14px 0 4px;}
+.price-now{font-family:var(--ff-display);font-weight:900;font-size:32px;color:var(--red);}
+.price-was{font-size:17px;color:var(--ink-soft);text-decoration:line-through;}
+.price-off{background:var(--gold);color:var(--ink);font-weight:800;font-size:12px;padding:4px 10px;border-radius:100px;}
+.stock-note{font-size:13.5px;font-weight:700;color:var(--red-dark);margin:6px 0 18px;display:flex;align-items:center;gap:6px;}
+.stock-bar{height:6px;border-radius:6px;background:var(--cream-2);overflow:hidden;margin-bottom:22px;}
+.stock-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:6px;transition:width .4s;}
+
+.field-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:block;color:var(--ink-soft);}
+.variant-row{display:flex;gap:12px;margin-bottom:24px;}
+.variant-opt{
+  border:2px solid var(--line);border-radius:var(--radius-sm);padding:12px 18px;cursor:pointer;flex:1;text-align:center;
+  transition:border-color .2s, background .2s;
+}
+.variant-opt b{display:block;font-size:15px;}
+.variant-opt small{font-size:12px;color:var(--ink-soft);}
+.variant-opt.active{border-color:var(--red);background:var(--red-soft);}
+
+.qty-row{display:flex;align-items:center;gap:18px;margin-bottom:24px;}
+.qty-stepper{display:flex;align-items:center;border:2px solid var(--ink);border-radius:100px;overflow:hidden;}
+.qty-stepper button{width:42px;height:42px;font-size:19px;font-weight:800;}
+.qty-stepper button:hover{background:var(--cream-2);}
+.qty-stepper span{width:38px;text-align:center;font-weight:800;font-size:15px;}
+
+.cta-row{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+.cta-row .btn{flex:1;min-width:180px;}
+.mini-trust{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px;}
+.mini-trust span{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+.desc-block{margin-top:28px;padding-top:24px;border-top:1px solid var(--line);}
+.desc-block p{font-size:14.5px;margin-bottom:10px;}
+@media(max-width:900px){.buy-grid{grid-template-columns:1fr;}.buy-art{order:-1;}}
+
+/* ============ REVIEWS ============ */
+.review-wrap{position:relative;max-width:680px;margin:0 auto;}
+.review-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:32px 34px;
+  box-shadow:var(--shadow-sm);display:none;animation:popIn .5s ease;
+}
+.review-card.active{display:block;}
+.review-card .row{display:flex;gap:3px;margin-bottom:14px;}
+.review-card p.quote{font-size:16.5px;color:var(--ink);font-style:italic;margin-bottom:18px;}
+.review-who{display:flex;align-items:center;gap:12px;}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--ff-display);color:var(--ink);}
+.review-who b{display:block;font-size:14.5px;}
+.review-who small{color:var(--ink-soft);font-size:12.5px;}
+.review-dots{display:flex;gap:8px;justify-content:center;margin-top:22px;}
+.review-dots button{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .2s, transform .2s;}
+.review-dots button.active{background:var(--red);transform:scale(1.3);}
+
+/* ============ FAQ ============ */
+.faq-list{max-width:720px;margin:0 auto;}
+.faq-item{border-bottom:1px solid var(--line);}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:20px 4px;text-align:left;font-weight:800;font-size:15.5px;}
+.faq-q .plus{font-size:22px;font-weight:400;transition:transform .3s;color:var(--red);flex-shrink:0;margin-left:16px;}
+.faq-item.open .faq-q .plus{transform:rotate(45deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-a p{padding:0 4px 20px;font-size:14.5px;}
+
+/* ============ FOOTER ============ */
+footer{background:var(--ink);color:var(--cream-2);padding:56px 0 26px;margin-top:20px;}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px;}
+.foot-brand p{color:rgba(255,251,242,.6);font-size:14px;margin-top:12px;max-width:280px;}
+footer h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;color:var(--gold-light);}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+footer a{font-size:14px;color:rgba(255,251,242,.75);text-decoration:none;}
+footer a:hover{color:#fff;}
+.foot-social{display:flex;gap:10px;margin-top:16px;}
+.foot-social a{width:36px;height:36px;border-radius:50%;background:rgba(255,251,242,.1);display:flex;align-items:center;justify-content:center;}
+.foot-bottom{border-top:1px solid rgba(255,251,242,.12);padding-top:22px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:rgba(255,251,242,.5);}
+@media(max-width:820px){.foot-grid{grid-template-columns:1fr 1fr;}}
+
+/* ============ MOBILE STICKY BAR ============ */
+.mobile-bar{
+  position:fixed;left:0;right:0;bottom:-100px;background:var(--paper);border-top:1px solid var(--line);
+  padding:12px 16px;display:flex;align-items:center;gap:14px;z-index:55;box-shadow:0 -10px 30px -20px rgba(0,0,0,.3);
+  transition:bottom .3s ease;
+}
+.mobile-bar.show{bottom:0;}
+.mobile-bar .mini-bottle{width:38px;height:38px;flex-shrink:0;}
+.mobile-bar .info{flex:1;}
+.mobile-bar .info b{display:block;font-size:13.5px;}
+.mobile-bar .info span{font-size:13px;color:var(--red);font-weight:800;}
+.mobile-bar .btn{padding:11px 18px;font-size:13.5px;}
+
+/* ============ FLOATING WHATSAPP ============ */
+.wa-float{
+  position:fixed;right:22px;bottom:24px;width:58px;height:58px;border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -8px rgba(37,211,102,.6);
+  z-index:60;transition:bottom .3s ease, transform .2s ease;
+}
+.wa-float:hover{transform:scale(1.08);}
+.wa-float::before{
+  content:"";position:absolute;inset:0;border-radius:50%;background:#25D366;opacity:.6;
+  animation:pulseSoft 2s ease-in-out infinite, waRing 2s ease-out infinite;
+}
+@keyframes waRing{0%{transform:scale(1);opacity:.55;}100%{transform:scale(1.6);opacity:0;}}
+.wa-float.lifted{bottom:96px;}
+@media(max-width:840px){.wa-float{width:52px;height:52px;right:16px;}}
+
+/* ============ CART DRAWER ============ */
+.overlay-bg{position:fixed;inset:0;background:rgba(35,20,7,.5);z-index:70;opacity:0;pointer-events:none;transition:opacity .3s;}
+.overlay-bg.show{opacity:1;pointer-events:auto;}
+.cart-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--cream);z-index:80;
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;
+}
+.cart-drawer.show{transform:translateX(0);}
+.cart-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid var(--line);}
+.cart-head h3{font-size:20px;}
+.cart-close{width:36px;height:36px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cart-items{flex:1;overflow-y:auto;padding:18px 24px;}
+.cart-empty{text-align:center;padding:60px 20px;color:var(--ink-soft);}
+.cart-line{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
+.cart-line .mini-bottle{width:52px;height:52px;flex-shrink:0;}
+.cart-line .info{flex:1;}
+.cart-line .info b{font-size:14.5px;display:block;}
+.cart-line .info small{color:var(--ink-soft);font-size:12.5px;}
+.cart-line .row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.cart-line .qty-stepper button{width:30px;height:30px;font-size:15px;}
+.cart-line .qty-stepper span{width:26px;font-size:13px;}
+.cart-remove{font-size:12px;font-weight:800;color:var(--red-dark);text-decoration:underline;}
+.cart-foot{padding:20px 24px;border-top:1px solid var(--line);}
+.cart-subtotal{display:flex;justify-content:space-between;font-weight:800;font-size:16px;margin-bottom:14px;}
+
+/* ============ CHECKOUT / CONFIRMATION VIEWS ============ */
+.view-overlay{position:fixed;inset:0;background:var(--cream);z-index:90;overflow-y:auto;}
+.checkout-top{border-bottom:1px solid var(--line);padding:16px 0;background:var(--paper);}
+.checkout-top .wrap{display:flex;align-items:center;gap:16px;}
+.back-link{display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px;}
+.checkout-wrap{max-width:1020px;margin:0 auto;padding:44px 24px 100px;}
+.checkout-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:44px;align-items:flex-start;}
+.checkout-title{font-size:26px;margin-bottom:26px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:13px;font-weight:800;margin-bottom:8px;color:var(--ink-soft);}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:13px 15px;border:2px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;
+  font-size:14.5px;background:var(--paper);transition:border-color .2s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red);outline:none;}
+.form-group.error input,.form-group.error select{border-color:var(--red);animation:shake .35s;}
+.form-error{font-size:12px;color:var(--red-dark);font-weight:700;margin-top:6px;display:none;}
+.form-group.error .form-error{display:block;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+
+.pay-option{
+  border:2px solid var(--red);background:var(--red-soft);border-radius:var(--radius-sm);padding:16px 18px;
+  display:flex;gap:14px;align-items:flex-start;margin-bottom:8px;
+}
+.pay-option .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--red);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;}
+.pay-option .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--red);}
+.pay-option b{display:block;font-size:15px;margin-bottom:3px;}
+.pay-option p{font-size:13px;}
+.pay-disabled{opacity:.55;border:2px dashed var(--line);border-radius:var(--radius-sm);padding:14px 18px;font-size:13px;font-weight:700;color:var(--ink-soft);margin-top:10px;}
+
+.order-summary{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px;position:sticky;top:20px;}
+.order-summary h3{font-size:17px;margin-bottom:18px;}
+.os-line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+.os-line .mini-bottle{width:48px;height:48px;flex-shrink:0;}
+.os-line .info{flex:1;font-size:13.5px;}
+.os-line .info b{display:block;}
+.os-totals{margin-top:16px;}
+.os-totals .row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px;color:var(--ink-soft);}
+.os-totals .row.total{color:var(--ink);font-weight:800;font-size:17px;border-top:1px solid var(--line);padding-top:12px;margin-top:6px;}
+.os-totals .row.total b{font-family:var(--ff-display);color:var(--red);}
+
+.confirm-wrap{max-width:520px;margin:0 auto;padding:90px 24px;text-align:center;}
+.check-circle{width:100px;height:100px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 26px;box-shadow:0 10px 0 var(--gold-deep);}
+.confirm-wrap h2{font-size:28px;margin-bottom:12px;}
+.confirm-wrap p{font-size:15px;margin-bottom:6px;}
+.order-id{display:inline-block;background:var(--cream-2);padding:10px 20px;border-radius:100px;font-weight:800;font-family:var(--ff-display);font-size:17px;margin:16px 0 28px;}
+.confetti-piece{position:fixed;top:0;width:10px;height:14px;z-index:99;pointer-events:none;animation:confettiFall 2.6s ease-in forwards;}
+
+/* toast - UPDATED: non-blocking pointer events + higher position on mobile */
+.toast-pop{
+  position:fixed;bottom:24px;left:24px;background:var(--ink);color:var(--cream);padding:14px 18px;border-radius:14px;
+  display:flex;align-items:center;gap:10px;z-index:65;font-size:13px;font-weight:700;max-width:280px;
+  animation:slideToast 5s ease forwards;box-shadow:var(--shadow-sm);
+  pointer-events:none; /* کسٹمر کی کلک اس کے آر پار ہو جائے گی، بٹن بلاک نہیں ہوگا */
+}
+.toast-pop .dot{width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;}
+@media(max-width:840px){
+  .toast-pop{left:14px;right:14px;max-width:none;bottom:90px;} /* موبائل بار کے اوپر شو ہوگا */
+}
+</style>
+</head>
+<body>
+
+<!-- ===== JUICY LOGIN SCREEN (UPDATED WITH CUTE DOGGY SVG) ===== -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-img-box">
+      <!-- پیاری اور غصے والی سکیورٹی ڈوگی کی ان لائن SVG تاکہ کبھی بریک نہ ہو -->
+      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="90" fill="#FFF3DC"/>
+        <!-- Dog Ears -->
+        <path d="M40 70C35 45 60 40 75 60L70 85Z" fill="#8F5C07"/>
+        <path d="M160 70C165 45 140 40 125 60L130 85Z" fill="#8F5C07"/>
+        <!-- Head -->
+        <ellipse cx="100" cy="105" rx="55" ry="48" fill="#F2A900"/>
+        <ellipse cx="100" cy="115" rx="42" ry="32" fill="#FFD666"/>
+        <!-- Eyes -->
+        <circle cx="80" cy="95" r="7" fill="#231407"/>
+        <circle cx="120" cy="95" r="7" fill="#231407"/>
+        <circle cx="78" cy="92" r="2.5" fill="#FFF"/>
+        <circle cx="118" cy="92" r="2.5" fill="#FFF"/>
+        <!-- Nose & Muzzle -->
+        <ellipse cx="100" cy="110" rx="10" ry="7" fill="#231407"/>
+        <path d="M100 117V125" stroke="#231407" stroke-width="3" stroke-linecap="round"/>
+        <path d="M88 125Q100 133 112 125" stroke="#231407" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <!-- Cute Guard Collar -->
+        <rect x="65" y="145" width="70" height="14" rx="7" fill="#D42328"/>
+        <circle cx="100" cy="159" r="8" fill="#FFD666" stroke="#231407" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="login-dialogue">
+      Ku Ray Madrchood Store May<br>Enter Krna Hai To
+      <em>Password Daal Bsdk</em>
+    </div>
+    <form class="login-form" id="loginForm" onsubmit="handleStoreLogin(event)">
+      <input type="password" id="storePassInput" class="login-input" placeholder="Enter Secret Password" autocomplete="off" autofocus>
+      <div class="login-error-msg" id="loginError">Galat Password Bsdk! Phir Daal</div>
+      <button type="submit" class="login-btn">ENTER STORE 🚀</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== TOP MARQUEE ===== -->
+<div class="topbar">
+  <div class="topbar-track" aria-hidden="true">
+    <span>🚚 <b>FREE DELIVERY</b> ACROSS PAKISTAN</span>
+    <span>💵 <b>CASH ON DELIVERY</b> AVAILABLE NATIONWIDE</span>
+    <span>🔥 <b>40% OFF</b> — LIMITED STOCK ONLY</span>
+    <span>🌿 100% NATURAL &amp; ORIGINAL</span>
+    <span>🚚 <b>FREE DELIVERY</b> ACROSS PAKISTAN</span>
+    <span>💵 <b>CASH ON DELIVERY</b> AVAILABLE NATIONWIDE</span>
+    <span>🔥 <b>40% OFF</b> — LIMITED STOCK ONLY</span>
+    <span>🌿 100% NATURAL &amp; ORIGINAL</span>
+  </div>
+</div>
+
+<!-- ===== MAIN STORE VIEW ===== -->
+<div id="view-store">
+
+<header class="site">
+  <div class="nav wrap">
+    <div class="brand">
+      <div class="logo-badge"><span>BS</span><div class="drop"></div></div>
+      <div class="brand-text"><b>BSstore.com</b><small>Beauty &amp; Strength</small></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#benefits">Benefits</a></li>
+      <li><a href="#ingredients">Ingredients</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#faq">FAQs</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" id="cartOpenBtn" aria-label="Open cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L21 8H6" stroke="#231407" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="21" r="1.4" fill="#231407"/><circle cx="18" cy="21" r="1.4" fill="#231407"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow">Pakistan's Hair Growth Oil</div>
+      <h1>Liquid gold for <em>fuller,</em><br>stronger hair.</h1>
+      <p class="lead">BS Oil blends castor, onion and rosemary to calm hair fall and wake up dormant roots — one warm massage at a time.</p>
+      <div class="stars">
+        <div class="row">★★★★★</div>
+        <small>4.8/5 from 1,240+ verified buyers</small>
+      </div>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="document.getElementById('buy').scrollIntoView({behavior:'smooth'})">Shop BS Oil</button>
+        <button class="btn btn-outline" onclick="document.getElementById('benefits').scrollIntoView({behavior:'smooth'})">See Benefits</button>
+      </div>
+      <div class="hero-trust">
+        <span>💵 Cash on Delivery</span>
+        <span>🚚 Free Shipping</span>
+        <span>↩️ 7-Day Returns</span>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <div class="blob"></div>
+      <svg class="drop-float" style="top:10%;left:6%;width:26px;animation-delay:.2s" viewBox="0 0 14 17" fill="none"><path d="M7 0C7 0 0 9 0 12.5A7 7 0 0 0 14 12.5C14 9 7 0 7 0Z" fill="#D42328" opacity=".8"/></svg>
+      <svg class="drop-float" style="top:65%;left:2%;width:18px;animation-delay:1.4s" viewBox="0 0 14 17" fill="none"><path d="M7 0C7 0 0 9 0 12.5A7 7 0 0 0 14 12.5C14 9 7 0 7 0Z" fill="#231407" opacity=".55"/></svg>
+      <svg class="drop-float" style="top:5%;right:4%;width:20px;animation-delay:.8s" viewBox="0 0 14 17" fill="none"><path d="M7 0C7 0 0 9 0 12.5A7 7 0 0 0 14 12.5C14 9 7 0 7 0Z" fill="#FFFFFF" opacity=".9"/></svg>
+      <svg class="drop-float" style="bottom:8%;right:8%;width:24px;animation-delay:2s" viewBox="0 0 14 17" fill="none"><path d="M7 0C7 0 0 9 0 12.5A7 7 0 0 0 14 12.5C14 9 7 0 7 0Z" fill="#D42328" opacity=".7"/></svg>
+
+      <div class="badge-discount"><b>40%</b><small>OFF TODAY</small></div>
+      <div class="bottle-stage" id="bottleStage">
+        <div class="bottle-3d" id="bottle3d">
+          <div class="bottle-face front">
+            <svg id="heroBottle" width="230" height="360" viewBox="0 0 220 340">
+              <defs>
+                <linearGradient id="oilGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FFD666"/>
+                  <stop offset="55%" stop-color="#F2A900"/>
+                  <stop offset="100%" stop-color="#8f5c07"/>
+                </linearGradient>
+                <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity=".55"/>
+                  <stop offset="20%" stop-color="#ffffff" stop-opacity="0"/>
+                  <stop offset="80%" stop-color="#000000" stop-opacity="0"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity=".2"/>
+                </linearGradient>
+                <clipPath id="bottleClip"><rect x="40" y="70" width="140" height="230" rx="26"/></clipPath>
+              </defs>
+              <ellipse id="bottleShadowEllipse" cx="110" cy="326" rx="72" ry="11" fill="#231407" opacity=".16"/>
+              <rect x="96" y="8" width="28" height="38" rx="8" fill="#B8790A"/>
+              <rect x="97" y="8" width="9" height="38" rx="4" fill="#ffffff" opacity=".28"/>
+              <rect x="101" y="0" width="18" height="16" rx="5" fill="#231407"/>
+              <rect x="100" y="46" width="20" height="26" fill="#F2A900"/>
+              <rect x="40" y="70" width="140" height="230" rx="26" fill="#FFFDF6" stroke="#231407" stroke-width="4"/>
+              <g clip-path="url(#bottleClip)">
+                <rect id="oilLevel" x="40" y="300" width="140" height="0" fill="url(#oilGrad)"/>
+                <rect x="40" y="70" width="140" height="230" fill="url(#glassGrad)"/>
+              </g>
+              <rect x="40" y="70" width="140" height="230" rx="26" fill="none" stroke="#231407" stroke-width="4"/>
+              <rect x="50" y="152" width="120" height="92" rx="12" fill="#D42328"/>
+              <rect x="50" y="152" width="120" height="92" rx="12" fill="none" stroke="#FFD666" stroke-width="2"/>
+              <text x="110" y="196" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="30" fill="#FFFBF2">BS</text>
+              <text x="110" y="218" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="11" letter-spacing="3" fill="#FFD666">HAIR OIL</text>
+              <text x="110" y="234" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="9" letter-spacing="1" fill="#FFFBF2" opacity=".85">100% NATURAL</text>
+              <ellipse cx="70" cy="112" rx="13" ry="48" fill="#ffffff" opacity=".28"/>
+              <g id="dripDrops"></g>
+            </svg>
+          </div>
+          <div class="bottle-face back">
+            <svg width="230" height="360" viewBox="0 0 220 340">
+              <ellipse cx="110" cy="326" rx="72" ry="11" fill="#231407" opacity=".16"/>
+              <rect x="96" y="8" width="28" height="38" rx="8" fill="#B8790A"/>
+              <rect x="101" y="0" width="18" height="16" rx="5" fill="#231407"/>
+              <rect x="100" y="46" width="20" height="26" fill="#F2A900"/>
+              <rect x="40" y="70" width="140" height="230" rx="26" fill="#FFFDF6" stroke="#231407" stroke-width="4"/>
+              <rect x="40" y="86" width="140" height="198" rx="10" fill="none" stroke="#231407" stroke-width="1.4" stroke-dasharray="2 4" opacity=".3"/>
+              <text x="110" y="108" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="10" letter-spacing="2" fill="#231407">INGREDIENTS</text>
+              <text x="58" y="132" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Cold-Pressed Castor Oil</text>
+              <text x="58" y="150" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Onion Seed Extract</text>
+              <text x="58" y="168" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Rosemary Oil</text>
+              <text x="58" y="186" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Amla Extract</text>
+              <text x="58" y="204" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Virgin Coconut Oil</text>
+              <text x="58" y="222" font-family="Manrope" font-weight="600" font-size="9.5" fill="#5b4a3a">• Bhringraj Extract</text>
+              <rect x="52" y="240" width="116" height="1" fill="#231407" opacity=".15"/>
+              <text x="110" y="262" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="9" letter-spacing="1.5" fill="#D42328">MADE IN PAKISTAN</text>
+              <text x="110" y="278" text-anchor="middle" font-family="Manrope" font-weight="600" font-size="8.5" fill="#5b4a3a">Net Vol: 100ml · Batch BS-26</text>
+              <g opacity=".7">
+                <rect x="80" y="290" width="2" height="16" fill="#231407"/><rect x="85" y="290" width="1" height="16" fill="#231407"/>
+                <rect x="89" y="290" width="3" height="16" fill="#231407"/><rect x="95" y="290" width="1" height="16" fill="#231407"/>
+                <rect x="99" y="290" width="2" height="16" fill="#231407"/><rect x="104" y="290" width="1" height="16" fill="#231407"/>
+                <rect x="108" y="290" width="3" height="16" fill="#231407"/><rect x="114" y="290" width="2" height="16" fill="#231407"/>
+                <rect x="119" y="290" width="1" height="16" fill="#231407"/><rect x="123" y="290" width="2" height="16" fill="#231407"/>
+                <rect x="128" y="290" width="1" height="16" fill="#231407"/><rect x="132" y="290" width="3" height="16" fill="#231407"/>
+              </g>
+            </svg>
+          </div>
+          <div class="bottle-shade" id="bottleShade"></div>
+        </div>
+        <div class="drag-hint" id="dragHint">↔ Drag to rotate &amp; read</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRUST STRIP ===== -->
+<section class="trust-strip">
+  <div class="wrap">
+    <div class="trust-item"><div class="ic">💵</div>Cash on Delivery</div>
+    <div class="trust-item"><div class="ic">🚚</div>Free Delivery Nationwide</div>
+    <div class="trust-item"><div class="ic">✅</div>100% Original Product</div>
+    <div class="trust-item"><div class="ic">↩️</div>7-Day Easy Return</div>
+  </div>
+</section>
+
+<!-- ===== BENEFITS ===== -->
+<section class="section" id="benefits">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center">Why BS Oil</div>
+      <h2>Made for real hair problems.</h2>
+      <p>Every drop is formulated to target hair fall, thin edges and a dry, tired scalp.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="benefit-card reveal"><div class="ic">🛡️</div><h3>Controls Hair Fall</h3><p>Strengthens roots so fewer strands end up on your pillow.</p></div>
+      <div class="benefit-card reveal"><div class="ic">🌱</div><h3>Boosts New Growth</h3><p>Wakes up dormant follicles for thicker regrowth over time.</p></div>
+      <div class="benefit-card reveal"><div class="ic">💧</div><h3>Deep Root Nourishment</h3><p>Feeds the scalp with nutrients most shampoos strip away.</p></div>
+      <div class="benefit-card reveal"><div class="ic">✨</div><h3>Natural Shine</h3><p>Leaves hair glossy and soft, never greasy or heavy.</p></div>
+      <div class="benefit-card reveal"><div class="ic">🍃</div><h3>No Parabens, No Harm</h3><p>Free from sulphates and artificial fragrance — just plant oils.</p></div>
+      <div class="benefit-card reveal"><div class="ic">♾️</div><h3>Suits Every Hair Type</h3><p>Straight, curly, oily or dry — one formula, made to work for all.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INGREDIENTS MARQUEE ===== -->
+<section class="ingredients" id="ingredients">
+  <div class="section-head" style="margin-bottom:34px;">
+    <div class="eyebrow" style="justify-content:center">What's Inside</div>
+    <h2>Six oils. Zero shortcuts.</h2>
+  </div>
+  <div class="ing-track" aria-hidden="true">
+    <div class="ing-chip"><div class="dot">🌰</div><b>Cold-Pressed Castor Oil</b></div>
+    <div class="ing-chip"><div class="dot">🧅</div><b>Onion Seed Extract</b></div>
+    <div class="ing-chip"><div class="dot">🌿</div><b>Rosemary Oil</b></div>
+    <div class="ing-chip"><div class="dot">🍯</div><b>Amla (Indian Gooseberry)</b></div>
+    <div class="ing-chip"><div class="dot">🥥</div><b>Virgin Coconut Oil</b></div>
+    <div class="ing-chip"><div class="dot">🌾</div><b>Bhringraj Extract</b></div>
+    <div class="ing-chip"><div class="dot">🌰</div><b>Cold-Pressed Castor Oil</b></div>
+    <div class="ing-chip"><div class="dot">🧅</div><b>Onion Seed Extract</b></div>
+    <div class="ing-chip"><div class="dot">🌿</div><b>Rosemary Oil</b></div>
+    <div class="ing-chip"><div class="dot">🍯</div><b>Amla (Indian Gooseberry)</b></div>
+    <div class="ing-chip"><div class="dot">🥥</div><b>Virgin Coconut Oil</b></div>
+    <div class="ing-chip"><div class="dot">🌾</div><b>Bhringraj Extract</b></div>
+  </div>
+</section>
+
+<!-- ===== HOW TO USE ===== -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center">Routine</div>
+      <h2>How to use BS Oil</h2>
+      <p>Three simple steps, twice a week, for visible results in 4–6 weeks.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card reveal"><div class="step-num">1</div><h3>Section &amp; Apply</h3><p>Part your hair into sections and apply oil directly onto the scalp.</p></div>
+      <div class="step-card reveal"><div class="step-num">2</div><h3>Massage 5 Minutes</h3><p>Massage in slow circular motions to boost blood flow to the roots.</p></div>
+      <div class="step-card reveal"><div class="step-num">3</div><h3>Leave &amp; Wash</h3><p>Leave for 1+ hour, or overnight, then rinse with a mild shampoo.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUY SECTION ===== -->
+<section class="section buy-section" id="buy">
+  <div class="wrap buy-grid">
+    <div class="buy-art">
+      <svg width="220" height="340" viewBox="0 0 220 340" style="filter:drop-shadow(0 30px 30px rgba(35,20,7,.15))">
+        <ellipse cx="110" cy="326" rx="72" ry="11" fill="#231407" opacity=".13"/>
+        <rect x="96" y="8" width="28" height="38" rx="8" fill="#B8790A"/>
+        <rect x="101" y="0" width="18" height="16" rx="5" fill="#231407"/>
+        <rect x="100" y="46" width="20" height="26" fill="#F2A900"/>
+        <rect x="40" y="70" width="140" height="230" rx="26" fill="#FFFDF6" stroke="#231407" stroke-width="4"/>
+        <rect x="40" y="140" width="140" height="160" fill="url(#oilGrad)" clip-path="url(#bottleClip)"/>
+        <rect x="40" y="70" width="140" height="230" rx="26" fill="none" stroke="#231407" stroke-width="4"/>
+        <rect x="50" y="152" width="120" height="92" rx="12" fill="#D42328"/>
+        <rect x="50" y="152" width="120" height="92" rx="12" fill="none" stroke="#FFD666" stroke-width="2"/>
+        <text x="110" y="196" text-anchor="middle" font-family="Fraunces" font-weight="900" font-size="30" fill="#FFFBF2">BS</text>
+        <text x="110" y="218" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="11" letter-spacing="3" fill="#FFD666">HAIR OIL</text>
+        <text x="110" y="234" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="9" letter-spacing="1" fill="#FFFBF2" opacity=".85">100% NATURAL</text>
+      </svg>
+    </div>
+
+    <div class="buy-panel">
+      <div class="eyebrow">BSstore.com Bestseller</div>
+      <h2>BS Oil — Hair Growth &amp; Repair</h2>
+      <p style="margin-top:8px;">A natural blend for hair fall control, faster growth and a nourished scalp.</p>
+
+      <div class="price-row">
+        <span class="price-now" id="priceNow">Rs. 1,499</span>
+        <span class="price-was" id="priceWas">Rs. 2,499</span>
+        <span class="price-off" id="priceOff">40% OFF</span>
+      </div>
+      <div class="stock-note" id="stockNote">🔥 Only 34 bottles left in stock</div>
+      <div class="stock-bar"><div class="stock-bar-fill" id="stockBarFill" style="width:68%"></div></div>
+
+      <span class="field-label">Choose Size</span>
+      <div class="variant-row">
+        <div class="variant-opt active" data-variant="100" onclick="selectVariant('100')">
+          <b>100ml</b><small>Rs. 1,499</small>
+        </div>
+        <div class="variant-opt" data-variant="200" onclick="selectVariant('200')">
+          <b>200ml</b><small>Rs. 2,699</small>
+        </div>
+      </div>
+
+      <span class="field-label">Quantity</span>
+      <div class="qty-row">
+        <div class="qty-stepper">
+          <button onclick="changeQty(-1)" aria-label="Decrease quantity">−</button>
+          <span id="qtyVal">1</span>
+          <button onclick="changeQty(1)" aria-label="Increase quantity">+</button>
+        </div>
+        <span style="font-size:13px;color:var(--ink-soft);font-weight:700;">In stock, ships in 24 hours</span>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-outline" id="addToCartBtn" onclick="addToCart(false, event)">🛒 Add to Cart</button>
+        <button class="btn btn-primary" id="buyNowBtn" onclick="addToCart(true, event)">Buy Now — Cash on Delivery</button>
+      </div>
+      <div class="mini-trust">
+        <span>💵 Pay on delivery</span>
+        <span>🚚 2–5 day delivery</span>
+        <span>🔒 Secure checkout</span>
+      </div>
+
+      <div class="desc-block">
+        <p><b>Full of it, minus the fillers.</b> BS Oil is cold-pressed and blended in small batches — no mineral oil, no synthetic fragrance, no shortcuts.</p>
+        <p><b>Made for daily Pakistani weather.</b> Lightweight enough for humid summers, rich enough for dry winters.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section class="section" id="reviews" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center">Real Results</div>
+      <h2>What our customers say</h2>
+    </div>
+    <div class="review-wrap">
+      <div class="review-card active">
+        <div class="row">★★★★★</div>
+        <p class="quote">"3 hafton mein hi hair fall kam ho gaya. Smell bhi halki si hai, chipchipa nahi lagta."</p>
+        <div class="review-who"><div class="review-avatar">A</div><div><b>Ayesha K.</b><small>Lahore</small></div></div>
+      </div>
+      <div class="review-card">
+        <div class="row">★★★★★</div>
+        <p class="quote">Ordered on COD, delivery was quick. My hairline actually looks fuller after a month.</p>
+        <div class="review-who"><div class="review-avatar">B</div><div><b>Bilal R.</b><small>Karachi</small></div></div>
+      </div>
+      <div class="review-card">
+        <div class="row">★★★★☆</div>
+        <p class="quote">Packaging solid tha, oil thick consistency ka hai. Overnight laga ke sota hoon, farq mehsoos hota hai.</p>
+        <div class="review-who"><div class="review-avatar">F</div><div><b>Fatima S.</b><small>Islamabad</small></div></div>
+      </div>
+      <div class="review-card">
+        <div class="row">★★★★★</div>
+        <p class="quote">Best hair oil I've tried from a local brand. Scalp feels less itchy and way less flaky now.</p>
+        <div class="review-who"><div class="review-avatar">H</div><div><b>Hamza T.</b><small>Faisalabad</small></div></div>
+      </div>
+      <div class="review-dots">
+        <button class="active" onclick="goReview(0)"></button>
+        <button onclick="goReview(1)"></button>
+        <button onclick="goReview(2)"></button>
+        <button onclick="goReview(3)"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center">Questions</div>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Do you offer Cash on Delivery across Pakistan?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes — COD is available in every major city. You only pay when the order reaches your door.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How long until I see results?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Most customers notice less hair fall in 2–3 weeks, with visible regrowth around 6–8 weeks of regular use.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How long does delivery take?<span class="plus">+</span></button>
+        <div class="faq-a"><p>2–3 days in major cities, up to 5 days for other areas across Pakistan.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Is BS Oil suitable for colored or chemically treated hair?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes, the formula is gentle enough for colored, keratin-treated, and chemically processed hair.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What's your return policy?<span class="plus">+</span></button>
+        <div class="faq-a"><p>If the seal is unbroken, you can return within 7 days of delivery for a full refund.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand" style="align-items:center;">
+          <div class="logo-badge"><span>BS</span><div class="drop"></div></div>
+          <div class="brand-text"><b style="color:#fff;">BSstore.com</b><small style="color:rgba(255,251,242,.6);">Beauty &amp; Strength</small></div>
+        </div>
+        <p>BSstore.com — home of BS Oil, Pakistan's cold-pressed hair growth oil. Made locally, trusted nationwide.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="Facebook">📘</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+        </div>
+      </div>
+      <div><h4>Shop</h4><ul><li><a href="#buy">BS Oil 100ml</a></li><li><a href="#buy">BS Oil 200ml</a></li><li><a href="#benefits">Benefits</a></li></ul></div>
+      <div><h4>Support</h4><ul><li><a href="#faq">FAQs</a></li><li><a href="#">Track Order</a></li><li><a href="#">Return Policy</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="https://wa.me/923151795346" target="_blank" rel="noopener">WhatsApp: 0315 1795346</a></li><li><a href="#">support@bsstore.com</a></li><li><a href="#">Lahore, Pakistan</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 BSstore.com — All rights reserved.</span>
+      <span>💵 Cash on Delivery · 🚚 Nationwide Shipping</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /view-store -->
+
+<!-- ===== MOBILE STICKY BAR ===== -->
+<div class="mobile-bar" id="mobileBar">
+  <svg class="mini-bottle" viewBox="0 0 220 340"><rect x="40" y="70" width="140" height="230" rx="26" fill="#FFFDF6" stroke="#231407" stroke-width="8"/><rect x="50" y="152" width="120" height="92" rx="12" fill="#D42328"/><rect x="96" y="8" width="28" height="38" rx="8" fill="#B8790A"/></svg>
+  <div class="info"><b>BS Oil</b><span id="mobilePrice">Rs. 1,499</span></div>
+  <button class="btn btn-primary" onclick="addToCart(false, event)">Add to Cart</button>
+</div>
+
+<!-- ===== FLOATING WHATSAPP ===== -->
+<a class="wa-float" id="waFloat" href="https://wa.me/923151795346?text=Hi%20BSstore.com%2C%20I%20have%20a%20question%20about%20BS%20Oil" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2Z" fill="#fff"/><path d="M8.4 7.3c.2-.5.5-.5.7-.5h.6c.2 0 .4 0 .6.4.2.5.7 1.7.8 1.8.1.2.1.3 0 .5-.1.2-.2.3-.3.5-.2.2-.3.3-.1.6.2.3.8 1.3 1.8 2.1 1.2 1 2.2 1.3 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.9.3.1.5.2.5.3 0 .2 0 1-.4 1.5-.4.5-1.4 1-2.3.9-.9-.1-3.4-.9-5.4-2.9-2.1-2.1-2.9-4.5-3-5.4-.1-.9.4-1.9.9-2.3l.3-.1Z" fill="#25D366"/></svg>
+</a>
+
+<!-- ===== CART DRAWER ===== -->
+<div class="overlay-bg" id="overlayBg" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">Rs. 0</span></div>
+    <button class="btn btn-primary btn-block" onclick="goToCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ===== CHECKOUT VIEW ===== -->
+<div class="view-overlay hidden" id="view-checkout">
+  <div class="checkout-top">
+    <div class="wrap">
+      <button class="back-link" onclick="closeCheckout()">← Back to store</button>
+    </div>
+  </div>
+  <div class="checkout-wrap">
+    <h2 class="checkout-title">Checkout</h2>
+    <div class="checkout-grid">
+      <div>
+        <form id="checkoutForm" onsubmit="placeOrder(event)">
+          <div class="form-group">
+            <label for="fname">Full Name</label>
+            <input type="text" id="fname" placeholder="e.g. Ahmed Raza" required>
+            <div class="form-error">Please enter your full name.</div>
+          </div>
+          <div class="form-group">
+            <label for="fphone">Phone Number</label>
+            <input type="tel" id="fphone" placeholder="03XX XXXXXXX" required>
+            <div class="form-error">Enter a valid Pakistani phone number.</div>
+          </div>
+          <div class="form-group">
+            <label for="faddress">Delivery Address</label>
+            <textarea id="faddress" rows="3" placeholder="House #, street, area" required></textarea>
+            <div class="form-error">Please enter your delivery address.</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fcity">City</label>
+              <select id="fcity" required>
+                <option value="">Select city</option>
+                <option>Karachi</option><option>Lahore</option><option>Islamabad</option>
+                <option>Rawalpindi</option><option>Faisalabad</option><option>Multan</option>
+                <option>Peshawar</option><option>Quetta</option><option>Sialkot</option><option>Other</option>
+              </select>
+              <div class="form-error">Please select a city.</div>
+            </div>
+            <div class="form-group">
+              <label for="fnotes">Notes (optional)</label>
+              <input type="text" id="fnotes" placeholder="Landmark, delivery time…">
+            </div>
+          </div>
+
+          <span class="field-label" style="margin-top:10px;">Payment Method</span>
+          <div class="pay-option">
+            <div class="radio"></div>
+            <div><b>Cash on Delivery (COD)</b><p>Pay in cash when your BS Oil arrives at your doorstep.</p></div>
+          </div>
+          <div class="pay-disabled">💳 Card / Online payment — coming soon</div>
+
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:26px;" id="placeOrderBtn">Place Order — Cash on Delivery</button>
+        </form>
+      </div>
+
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div id="osItems"></div>
+        <div class="os-totals">
+          <div class="row"><span>Subtotal</span><span id="osSubtotal">Rs. 0</span></div>
+          <div class="row"><span>Shipping</span><span style="color:#2E8B3D;font-weight:800;">Free</span></div>
+          <div class="row total"><span>Total</span><b id="osTotal">Rs. 0</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRMATION VIEW ===== -->
+<div class="view-overlay hidden" id="view-confirmation">
+  <div class="confirm-wrap">
+    <div class="check-circle">
+      <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+        <path id="checkPath" d="M12 24l8 8 16-18" stroke="#231407" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="46" stroke-dashoffset="46"/>
+      </svg>
+    </div>
+    <h2>Order placed successfully!</h2>
+    <p>Thank you — your BS Oil is on its way.</p>
+    <p style="color:var(--ink-soft);font-size:13.5px;">We'll call you shortly to confirm your Cash on Delivery order.</p>
+    <div class="order-id" id="orderIdDisplay">BS-00000</div>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="window.location.reload()">Continue Shopping</button>
+      <a class="btn btn-outline" id="waConfirmLink" href="https://wa.me/923151795346" target="_blank" rel="noopener">💬 Message us on WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ JUICY STORE LOGIN HANDLER (NEW) ============ */
+function handleStoreLogin(e){
+  e.preventDefault();
+  const input = document.getElementById("storePassInput");
+  const err = document.getElementById("loginError");
+  const val = input.value.trim().toLowerCase();
+
+  // checking for password "Bhenchod" (case-insensitive)
+  if(val === "bhenchod"){
+    err.classList.remove("show");
+    document.getElementById("login-overlay").classList.add("unlocked");
+    document.body.style.overflow = "";
+  } else {
+    input.classList.remove("error");
+    void input.offsetWidth; // reset CSS animation
+    input.classList.add("error");
+    err.classList.add("show");
+    input.value = "";
+    input.focus();
+  }
+}
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.style.overflow = "hidden";
+});
+
+/* ============ PRODUCT DATA ============ */
+const variants = {
+  "100": { label: "100ml", price: 1499, was: 2499, stock: 34 },
+  "200": { label: "200ml", price: 2699, was: 4499, stock: 19 }
+};
+let currentVariant = "100";
+let currentQty = 1;
+let cart = [];
+
+function fmt(n){ return "Rs. " + n.toLocaleString("en-PK"); }
+
+/* ============ HERO OIL POUR ANIMATION ============ */
+window.addEventListener("load", () => {
+  const oil = document.getElementById("oilLevel");
+  requestAnimationFrame(() => {
+    oil.style.transition = "y 1.6s cubic-bezier(.25,.8,.3,1), height 1.6s cubic-bezier(.25,.8,.3,1)";
+    oil.setAttribute("y", "140");
+    oil.setAttribute("height", "160");
+  });
+  const dripHost = document.getElementById("dripDrops");
+  setInterval(() => {
+    const d = document.createElementNS("http://www.w3.org/2000/svg","path");
+    d.setAttribute("d","M0 0C0 0 -4 6 -4 8.5A4 4 0 0 0 4 8.5C4 6 0 0 0 0Z");
+    d.setAttribute("fill","#F2A900");
+    d.setAttribute("transform","translate(110,68)");
+    d.style.animation = "drip 1.4s ease forwards";
+    dripHost.appendChild(d);
+    setTimeout(()=> d.remove(), 1450);
+  }, 2200);
+});
+
+/* ============ 3D DRAG-TO-ROTATE BOTTLE ============ */
+(function(){
+  const stage = document.getElementById("bottleStage");
+  const bottle3d = document.getElementById("bottle3d");
+  const shadowEl = document.getElementById("bottleShadowEllipse");
+  const hint = document.getElementById("dragHint");
+  if(!stage) return;
+
+  let rotation = 0;
+  let dragging = false;
+  let lastX = 0;
+  let autoRotating = true;
+  let resumeTimer = null;
+  let lastTime = null;
+  let hintFaded = false;
+
+  function applyRotation(){
+    bottle3d.style.transform = "rotateY(" + rotation + "deg)";
+    const rad = rotation * Math.PI / 180;
+    if(shadowEl){
+      const scaleX = Math.max(.35, Math.abs(Math.cos(rad)));
+      shadowEl.setAttribute("transform", "translate(110 326) scale(" + scaleX.toFixed(2) + " 1) translate(-110 -326)");
+    }
+  }
+
+  function fadeHint(){
+    if(hintFaded) return;
+    hintFaded = true;
+    hint.classList.add("faded");
+  }
+
+  function tick(t){
+    if(lastTime === null) lastTime = t;
+    const dt = (t - lastTime) / 1000;
+    lastTime = t;
+    if(autoRotating && !dragging){
+      rotation += dt * 9;
+      applyRotation();
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  stage.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    autoRotating = false;
+    lastX = e.clientX;
+    stage.setPointerCapture(e.pointerId);
+    clearTimeout(resumeTimer);
+    fadeHint();
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if(!dragging) return;
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+    rotation += dx * 0.7;
+    applyRotation();
+  });
+  function endDrag(){
+    if(!dragging) return;
+    dragging = false;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => { autoRotating = true; }, 2600);
+  }
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", endDrag);
+  window.addEventListener("pointerup", endDrag);
+})();
+
+/* ============ VARIANT / QTY ============ */
+function selectVariant(v){
+  currentVariant = v;
+  document.querySelectorAll(".variant-opt").forEach(el => el.classList.toggle("active", el.dataset.variant === v));
+  updatePriceUI();
+}
+function changeQty(delta){
+  currentQty = Math.max(1, Math.min(5, currentQty + delta));
+  document.getElementById("qtyVal").textContent = currentQty;
+}
+function updatePriceUI(){
+  const v = variants[currentVariant];
+  const off = Math.round((1 - v.price / v.was) * 100);
+  document.getElementById("priceNow").textContent = fmt(v.price);
+  document.getElementById("priceWas").textContent = fmt(v.was);
+  document.getElementById("priceOff").textContent = off + "% OFF";
+  document.getElementById("mobilePrice").textContent = fmt(v.price);
+  document.getElementById("stockNote").textContent = "🔥 Only " + v.stock + " bottles left in stock";
+  document.getElementById("stockBarFill").style.width = Math.max(8, Math.min(90, v.stock)) + "%";
+}
+updatePriceUI();
+
+/* ============ CART ============ */
+function addToCart(buyNow, evt){
+  const v = variants[currentVariant];
+  const id = "bs-oil-" + currentVariant;
+  const existing = cart.find(i => i.id === id);
+  if (existing) existing.qty += currentQty;
+  else cart.push({ id, label: "BS Oil (" + v.label + ")", price: v.price, qty: currentQty });
+
+  if (v.stock > 3) v.stock -= 1;
+  updatePriceUI();
+  renderCart();
+  bumpCartIcon();
+  flyToCart(evt);
+
+  if (buyNow){ goToCheckout(); }
+  else { openCart(); }
+}
+
+function bumpCartIcon(){
+  const c = document.getElementById("cartCount");
+  c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump");
+}
+
+function flyToCart(evt){
+  if(!evt) return;
+  const cartBtn = document.getElementById("cartOpenBtn");
+  const startRect = evt.target.getBoundingClientRect();
+  const endRect = cartBtn.getBoundingClientRect();
+  const drop = document.createElement("div");
+  drop.style.cssText = `position:fixed;left:${startRect.left+startRect.width/2}px;top:${startRect.top}px;width:14px;height:16px;background:#F2A900;border-radius:50% 50% 50% 0;transform:rotate(45deg);z-index:200;pointer-events:none;transition:all .7s cubic-bezier(.3,.6,.2,1);`;
+  document.body.appendChild(drop);
+  requestAnimationFrame(() => {
+    drop.style.left = (endRect.left+endRect.width/2) + "px";
+    drop.style.top = (endRect.top+endRect.height/2) + "px";
+    drop.style.opacity = "0.3";
+    drop.style.transform = "scale(.3) rotate(180deg)";
+  });
+  setTimeout(()=> drop.remove(), 750);
+}
+
+function renderCart(){
+  const itemsEl = document.getElementById("cartItems");
+  const footEl = document.getElementById("cartFoot");
+  const countEl = document.getElementById("cartCount");
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  countEl.textContent = totalQty;
+
+  if (cart.length === 0){
+    itemsEl.innerHTML = '<div class="cart-empty">🛒<br><br>Your cart is empty.<br>Add BS Oil to get started.</div>';
+    footEl.style.display = "none";
+    return;
+  }
+  footEl.style.display = "block";
+  itemsEl.innerHTML = cart.map(i => `
+    <div class="cart-line">
+      ${miniBottleSVG()}
+      <div class="info">
+        <b>${i.label}</b>
+        <small>${fmt(i.price)} each</small>
+        <div class="row">
+          <div class="qty-stepper">
+            <button onclick="cartQty('${i.id}',-1)">−</button>
+            <span>${i.qty}</span>
+            <button onclick="cartQty('${i.id}',1)">+</button>
+          </div>
+          <button class="cart-remove" onclick="cartRemove('${i.id}')">Remove</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  const subtotal = cart.reduce((s,i)=> s + i.price*i.qty, 0);
+  document.getElementById("cartSubtotal").textContent = fmt(subtotal);
+}
+function miniBottleSVG(){
+  return `<svg class="mini-bottle" viewBox="0 0 220 340"><rect x="40" y="70" width="140" height="230" rx="26" fill="#FFFDF6" stroke="#231407" stroke-width="8"/><rect x="50" y="152" width="120" height="92" rx="12" fill="#D42328"/><rect x="96" y="8" width="28" height="38" rx="8" fill="#B8790A"/></svg>`;
+}
+function cartQty(id, delta){
+  const item = cart.find(i=>i.id===id);
+  if(!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderCart();
+}
+function cartRemove(id){
+  cart = cart.filter(i=>i.id!==id);
+  renderCart();
+}
+
+function openCart(){
+  document.getElementById("cartDrawer").classList.add("show");
+  document.getElementById("overlayBg").classList.add("show");
+}
+function closeCart(){
+  document.getElementById("cartDrawer").classList.remove("show");
+  document.getElementById("overlayBg").classList.remove("show");
+}
+document.getElementById("cartOpenBtn").addEventListener("click", openCart);
+renderCart();
+
+/* ============ CHECKOUT ============ */
+function goToCheckout(){
+  if (cart.length === 0){ openCart(); return; }
+  closeCart();
+  document.getElementById("view-checkout").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  renderCheckoutSummary();
+  window.scrollTo(0,0);
+}
+function closeCheckout(){
+  document.getElementById("view-checkout").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+function renderCheckoutSummary(){
+  const osItems = document.getElementById("osItems");
+  osItems.innerHTML = cart.map(i => `
+    <div class="os-line">
+      ${miniBottleSVG()}
+      <div class="info"><b>${i.label}</b>Qty: ${i.qty} × ${fmt(i.price)}</div>
+    </div>
+  `).join("");
+  const subtotal = cart.reduce((s,i)=> s + i.price*i.qty, 0);
+  document.getElementById("osSubtotal").textContent = fmt(subtotal);
+  document.getElementById("osTotal").textContent = fmt(subtotal);
+}
+
+function validateField(el, condition){
+  const group = el.closest(".form-group");
+  group.classList.toggle("error", !condition);
+  return condition;
+}
+function placeOrder(e){
+  e.preventDefault();
+  const fname = document.getElementById("fname");
+  const fphone = document.getElementById("fphone");
+  const faddress = document.getElementById("faddress");
+  const fcity = document.getElementById("fcity");
+
+  const phonePattern = /^(0|\+92)?3\d{2}[\s-]?\d{7}$/;
+  let ok = true;
+  ok = validateField(fname, fname.value.trim().length > 2) && ok;
+  ok = validateField(fphone, phonePattern.test(fphone.value.trim())) && ok;
+  ok = validateField(faddress, faddress.value.trim().length > 5) && ok;
+  ok = validateField(fcity, fcity.value !== "") && ok;
+  if (!ok) return;
+
+  const btn = document.getElementById("placeOrderBtn");
+  btn.textContent = "Placing your order…";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const orderId = "BS-" + Math.floor(10000 + Math.random()*89999);
+    document.getElementById("orderIdDisplay").textContent = orderId;
+    document.getElementById("waConfirmLink").href = "https://wa.me/923151795346?text=" + encodeURIComponent("Hi BSstore.com, I just placed order " + orderId + " for BS Oil.");
+    document.getElementById("view-checkout").classList.add("hidden");
+    document.getElementById("view-confirmation").classList.remove("hidden");
+    launchConfetti();
+    setTimeout(()=>{
+      const path = document.getElementById("checkPath");
+      path.style.animation = "drawCheck .6s ease forwards";
+    }, 200);
+    btn.textContent = "Place Order — Cash on Delivery";
+    btn.disabled = false;
+    cart = [];
+    renderCart();
+  }, 1100);
+}
+
+function launchConfetti(){
+  const colors = ["#D42328","#F2A900","#FFD666","#231407"];
+  for(let i=0;i<40;i++){
+    const p = document.createElement("div");
+    p.className = "confetti-piece";
+    p.style.left = Math.random()*100 + "vw";
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = (Math.random()*.5) + "s";
+    p.style.borderRadius = Math.random()>.5 ? "50%" : "2px";
+    document.body.appendChild(p);
+    setTimeout(()=> p.remove(), 3200);
+  }
+}
+
+/* ============ SCROLL REVEAL ============ */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((entry, idx) => {
+    if (entry.isIntersecting){
+      entry.target.style.animationDelay = (idx % 6) * 0.08 + "s";
+      entry.target.classList.add("in-view");
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: .15 });
+document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+/* ============ REVIEWS CAROUSEL ============ */
+let reviewIdx = 0;
+const reviewCards = document.querySelectorAll(".review-card");
+const reviewDots = document.querySelectorAll(".review-dots button");
+function goReview(i){
+  reviewCards[reviewIdx].classList.remove("active");
+  reviewDots[reviewIdx].classList.remove("active");
+  reviewIdx = i;
+  reviewCards[reviewIdx].classList.add("active");
+  reviewDots[reviewIdx].classList.add("active");
+}
+setInterval(() => goReview((reviewIdx+1) % reviewCards.length), 4500);
+
+/* ============ FAQ ACCORDION ============ */
+function toggleFaq(btn){
+  const item = btn.closest(".faq-item");
+  const answer = item.querySelector(".faq-a");
+  const isOpen = item.classList.contains("open");
+  document.querySelectorAll(".faq-item.open").forEach(el => {
+    el.classList.remove("open");
+    el.querySelector(".faq-a").style.maxHeight = null;
+  });
+  if (!isOpen){
+    item.classList.add("open");
+    answer.style.maxHeight = answer.scrollHeight + "px";
+  }
+}
+
+/* ============ MOBILE STICKY BAR ============ */
+const heroEl = document.querySelector(".hero");
+window.addEventListener("scroll", () => {
+  const bar = document.getElementById("mobileBar");
+  const waBtn = document.getElementById("waFloat");
+  const showBar = window.innerWidth <= 840 && window.scrollY > heroEl.offsetHeight;
+  bar.classList.toggle("show", showBar);
+  waBtn.classList.toggle("lifted", showBar);
+});
+
+/* ============ SOCIAL PROOF TOAST ============ */
+const toastNames = [
+  ["Sana", "Rawalpindi"], ["Usman", "Multan"], ["Mahnoor", "Peshawar"],
+  ["Ali", "Karachi"], ["Zara", "Lahore"], ["Hassan", "Sialkot"]
+];
+function showToast(){
+  const [name, city] = toastNames[Math.floor(Math.random()*toastNames.length)];
+  const t = document.createElement("div");
+  t.className = "toast-pop";
+  t.innerHTML = `<span class="dot"></span> <b>${name}</b> from ${city} just ordered BS Oil 🎉`;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 5000);
+}
+setTimeout(showToast, 4000);
+setInterval(showToast, 12000);
+</script>
+</body>
+</html>
