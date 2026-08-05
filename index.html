@@ -52,6 +52,60 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 h1,h2,h3{font-family:var(--ff-display);font-weight:900;line-height:1.05;margin:0;color:var(--ink);}
 p{line-height:1.6;color:var(--ink-soft);margin:0;}
 
+/* ============ HEAVY JUICY LOGIN SCREEN ============ */
+#login-overlay{
+  position:fixed;inset:0;z-index:99999;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  transition:opacity .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1);
+}
+#login-overlay.unlocked{
+  opacity:0;pointer-events:none;transform:scale(1.05);
+}
+.login-card{
+  background:var(--cream);border:3px solid var(--ink);border-radius:32px;
+  max-width:480px;width:100%;padding:36px 28px;text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+  animation:popIn .6s cubic-bezier(.18,.89,.32,1.28) forwards;
+  position:relative;overflow:hidden;
+}
+.login-img-box{
+  width:160px;height:160px;margin:0 auto 20px;border-radius:24px;
+  background:radial-gradient(circle at 50% 30%, #FFD666 0%, #F2A900 60%, #B8790A 100%);
+  border:4px solid var(--ink);box-shadow:0 12px 24px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  padding:10px;
+}
+.login-img-box svg{
+  width:100%;height:100%;
+}
+.login-dialogue{
+  font-family:var(--ff-display);font-weight:900;font-size:24px;
+  line-height:1.2;color:var(--ink);margin-bottom:24px;
+}
+.login-dialogue em{
+  font-style:italic;color:var(--red);display:block;margin-top:4px;
+}
+.login-form{display:flex;flex-direction:column;gap:14px;}
+.login-input{
+  width:100%;padding:16px 20px;border:3px solid var(--ink);border-radius:100px;
+  font-family:var(--ff-body);font-size:16px;font-weight:800;text-align:center;
+  background:var(--paper);color:var(--ink);transition:border-color .2s, box-shadow .2s;
+}
+.login-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft);}
+.login-input.error{border-color:var(--red);animation:shake .35s;}
+.login-btn{
+  background:var(--red);color:#fff;font-family:var(--ff-display);font-size:18px;font-weight:900;
+  padding:16px 28px;border-radius:100px;border:3px solid var(--ink);
+  box-shadow:0 6px 0 var(--ink);cursor:pointer;transition:transform .15s, box-shadow .15s;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--ink);}
+.login-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink);}
+.login-error-msg{
+  color:var(--red-dark);font-size:13px;font-weight:800;margin-top:4px;
+  min-height:18px;opacity:0;transition:opacity .2s;
+}
+.login-error-msg.show{opacity:1;}
+
 /* ============ MOTION ============ */
 @keyframes floatDrop{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-22px) rotate(6deg);}}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
@@ -158,8 +212,7 @@ header.site{
 .bottle-face.front{transform:translateZ(1px);}
 .bottle-face.back{transform:rotateY(180deg) translateZ(1px);}
 .bottle-shade{
-  position:absolute;inset:0;pointer-events:none;opacity:0;border-radius:26px;mix-blend-mode:overlay;
-  background:linear-gradient(115deg, rgba(255,255,255,.85), rgba(255,255,255,0) 42%, rgba(0,0,0,.3) 100%);
+  display:none !important;opacity:0 !important;pointer-events:none;
 }
 .drag-hint{
   position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);background:var(--ink);color:var(--cream);
@@ -413,17 +466,59 @@ footer a:hover{color:#fff;}
 .order-id{display:inline-block;background:var(--cream-2);padding:10px 20px;border-radius:100px;font-weight:800;font-family:var(--ff-display);font-size:17px;margin:16px 0 28px;}
 .confetti-piece{position:fixed;top:0;width:10px;height:14px;z-index:99;pointer-events:none;animation:confettiFall 2.6s ease-in forwards;}
 
-/* toast */
+/* toast - UPDATED: non-blocking pointer events + higher position on mobile */
 .toast-pop{
   position:fixed;bottom:24px;left:24px;background:var(--ink);color:var(--cream);padding:14px 18px;border-radius:14px;
   display:flex;align-items:center;gap:10px;z-index:65;font-size:13px;font-weight:700;max-width:280px;
   animation:slideToast 5s ease forwards;box-shadow:var(--shadow-sm);
+  pointer-events:none; /* کسٹمر کی کلک اس کے آر پار ہو جائے گی، بٹن بلاک نہیں ہوگا */
 }
 .toast-pop .dot{width:8px;height:8px;border-radius:50%;background:#4CAF50;flex-shrink:0;}
-@media(max-width:560px){.toast-pop{left:14px;right:14px;max-width:none;}}
+@media(max-width:840px){
+  .toast-pop{left:14px;right:14px;max-width:none;bottom:90px;} /* موبائل بار کے اوپر شو ہوگا */
+}
 </style>
 </head>
 <body>
+
+<!-- ===== JUICY LOGIN SCREEN (UPDATED WITH CUTE DOGGY SVG) ===== -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-img-box">
+      <!-- پیاری اور غصے والی سکیورٹی ڈوگی کی ان لائن SVG تاکہ کبھی بریک نہ ہو -->
+      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="90" fill="#FFF3DC"/>
+        <!-- Dog Ears -->
+        <path d="M40 70C35 45 60 40 75 60L70 85Z" fill="#8F5C07"/>
+        <path d="M160 70C165 45 140 40 125 60L130 85Z" fill="#8F5C07"/>
+        <!-- Head -->
+        <ellipse cx="100" cy="105" rx="55" ry="48" fill="#F2A900"/>
+        <ellipse cx="100" cy="115" rx="42" ry="32" fill="#FFD666"/>
+        <!-- Eyes -->
+        <circle cx="80" cy="95" r="7" fill="#231407"/>
+        <circle cx="120" cy="95" r="7" fill="#231407"/>
+        <circle cx="78" cy="92" r="2.5" fill="#FFF"/>
+        <circle cx="118" cy="92" r="2.5" fill="#FFF"/>
+        <!-- Nose & Muzzle -->
+        <ellipse cx="100" cy="110" rx="10" ry="7" fill="#231407"/>
+        <path d="M100 117V125" stroke="#231407" stroke-width="3" stroke-linecap="round"/>
+        <path d="M88 125Q100 133 112 125" stroke="#231407" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <!-- Cute Guard Collar -->
+        <rect x="65" y="145" width="70" height="14" rx="7" fill="#D42328"/>
+        <circle cx="100" cy="159" r="8" fill="#FFD666" stroke="#231407" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="login-dialogue">
+      Ku Ray Madrchood Store May<br>Enter Krna Hai To
+      <em>Password Daal Bsdk</em>
+    </div>
+    <form class="login-form" id="loginForm" onsubmit="handleStoreLogin(event)">
+      <input type="password" id="storePassInput" class="login-input" placeholder="Enter Secret Password" autocomplete="off" autofocus>
+      <div class="login-error-msg" id="loginError">Galat Password Bsdk! Phir Daal</div>
+      <button type="submit" class="login-btn">ENTER STORE 🚀</button>
+    </form>
+  </div>
+</div>
 
 <!-- ===== TOP MARQUEE ===== -->
 <div class="topbar">
@@ -918,6 +1013,31 @@ footer a:hover{color:#fff;}
 </div>
 
 <script>
+/* ============ JUICY STORE LOGIN HANDLER (NEW) ============ */
+function handleStoreLogin(e){
+  e.preventDefault();
+  const input = document.getElementById("storePassInput");
+  const err = document.getElementById("loginError");
+  const val = input.value.trim().toLowerCase();
+
+  // checking for password "Bhenchod" (case-insensitive)
+  if(val === "bhenchod"){
+    err.classList.remove("show");
+    document.getElementById("login-overlay").classList.add("unlocked");
+    document.body.style.overflow = "";
+  } else {
+    input.classList.remove("error");
+    void input.offsetWidth; // reset CSS animation
+    input.classList.add("error");
+    err.classList.add("show");
+    input.value = "";
+    input.focus();
+  }
+}
+window.addEventListener("DOMContentLoaded", () => {
+  document.body.style.overflow = "hidden";
+});
+
 /* ============ PRODUCT DATA ============ */
 const variants = {
   "100": { label: "100ml", price: 1499, was: 2499, stock: 34 },
@@ -925,7 +1045,7 @@ const variants = {
 };
 let currentVariant = "100";
 let currentQty = 1;
-let cart = []; // {id,label,price,qty}
+let cart = [];
 
 function fmt(n){ return "Rs. " + n.toLocaleString("en-PK"); }
 
@@ -937,7 +1057,6 @@ window.addEventListener("load", () => {
     oil.setAttribute("y", "140");
     oil.setAttribute("height", "160");
   });
-  // drip drops falling from the cap area
   const dripHost = document.getElementById("dripDrops");
   setInterval(() => {
     const d = document.createElementNS("http://www.w3.org/2000/svg","path");
@@ -954,7 +1073,6 @@ window.addEventListener("load", () => {
 (function(){
   const stage = document.getElementById("bottleStage");
   const bottle3d = document.getElementById("bottle3d");
-  const shade = document.getElementById("bottleShade");
   const shadowEl = document.getElementById("bottleShadowEllipse");
   const hint = document.getElementById("dragHint");
   if(!stage) return;
@@ -970,7 +1088,6 @@ window.addEventListener("load", () => {
   function applyRotation(){
     bottle3d.style.transform = "rotateY(" + rotation + "deg)";
     const rad = rotation * Math.PI / 180;
-    shade.style.opacity = (Math.abs(Math.sin(rad)) * 0.5).toFixed(2);
     if(shadowEl){
       const scaleX = Math.max(.35, Math.abs(Math.cos(rad)));
       shadowEl.setAttribute("transform", "translate(110 326) scale(" + scaleX.toFixed(2) + " 1) translate(-110 -326)");
@@ -1051,7 +1168,7 @@ function addToCart(buyNow, evt){
   if (existing) existing.qty += currentQty;
   else cart.push({ id, label: "BS Oil (" + v.label + ")", price: v.price, qty: currentQty });
 
-  if (v.stock > 3) v.stock -= 1; // light urgency effect
+  if (v.stock > 3) v.stock -= 1;
   updatePriceUI();
   renderCart();
   bumpCartIcon();
